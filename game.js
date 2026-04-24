@@ -195,4 +195,159 @@ class SandboxGame {
         const flowDir = Math.random() > 0.5 ? 1 : -1;
         if (x + flowDir >= 0 && x + flowDir < this.width && 
             this.canMoveInto(x + flowDir, y, mat.density)) {
-            this.moveParticle(x, y, x + flowDir
+            this.moveParticle(x, y, x + flowDir, y);
+            return;
+        }
+        
+        const otherFlow = -flowDir;
+        if (x + otherFlow >= 0 && x + otherFlow < this.width && 
+            this.canMoveInto(x + otherFlow, y, mat.density)) {
+            this.moveParticle(x, y, x + otherFlow, y);
+        }
+    }
+    
+    updateGas(p, x, y, mat) {
+        const above = y - 1;
+        
+        // Try move up
+        if (above >= 0 && this.canMoveInto(x, above, mat.density)) {
+            this.moveParticle(x, y, x, above);
+            return;
+        }
+        
+        // Try diagonal up
+        const dir = Math.random() > 0.5 ? 1 : -1;
+        if (above >= 0 && x + dir >= 0 && x + dir < this.width && 
+            this.canMoveInto(x + dir, above, mat.density)) {
+            this.moveParticle(x, y, x + dir, above);
+            return;
+        }
+        
+        // Drift sideways
+        if (x + dir >= 0 && x + dir < this.width && 
+            this.canMoveInto(x + dir, y, mat.density)) {
+            this.moveParticle(x, y, x + dir, y);
+        }
+    }
+    
+    moveParticle(fromX, fromY, toX, toY) {
+        const p = this.getParticle(fromX, fromY);
+        const target = this.getParticle(toX, toY);
+        
+        this.setParticle(toX, toY, p);
+        this.setParticle(fromX, fromY, target);
+        
+        if (p) {
+            p.x = toX;
+            p.y = toY;
+        }
+        if (target) {
+            target.x = fromX;
+            target.y = fromY;
+        }
+    }
+    
+    handleReactions(p, x, y) {
+        const neighbors = [
+            this.getParticle(x, y - 1),
+            this.getParticle(x, y + 1),
+            this.getParticle(x - 1, y),
+            this.getParticle(x + 1, y)
+        ].filter(n => n !== null);
+        
+        for (const neighbor of neighbors) {
+            this.react(p, neighbor, x, y);
+        }
+    }
+    
+    react(p, other, x, y) {
+        // Fire + Wood = Fire spreads
+        if (p.mat === 'fire' && other.mat === 'wood') {
+            if (Math.random() < 0.1) {
+                this.setParticle(other.x, other.y, new Particle('fire', other.x, other.y));
+            }
+        }
+        
+        // Fire + Oil = Big fire
+        if (p.mat === 'fire' && other.mat === 'oil') {
+            if (Math.random() < 0.3) {
+                this.setParticle(other.x, other.y, new Particle('fire', other.x, other.y));
+            }
+        }
+        
+        // Fire + Plant = Fire
+        if (p.mat === 'fire' && other.mat === 'plant') {
+            if (Math.random() < 0.15) {
+                this.setParticle(other.x, other.y, new Particle('fire', other.x, other.y));
+            }
+        }
+        
+        // Water + Fire = Steam
+        if ((p.mat === 'water' && other.mat === 'fire') || (p.mat === 'fire' && other.mat === 'water')) {
+            this.setParticle(x, y, new Particle('steam', x, y));
+            this.setParticle(other.x, other.y, null);
+            this.audio.playSteam();
+        }
+        
+        // Water + Lava (not implemented but could add)
+        
+        // Acid + anything = dissolves
+        if (p.mat === 'acid' && other.mat !== 'acid' && other.mat !== 'stone') {
+            if (Math.random() < 0.05) {
+                this.setParticle(other.x, other.y, null);
+                if (Math.random() < 0.3) {
+                    this.setParticle(x, y, null);
+                }
+            }
+        }
+        
+        // Salt + Water = salt water (just visual mix for now)
+        
+        // Plant + Water = grows (simple)
+        if (p.mat === 'plant' && other.mat === 'water') {
+            const above = y - 1;
+            if (above >= 0 && this.isEmpty(x, above) && Math.random() < 0.02) {
+                this.setParticle(x, above, new Particle('plant', x, above));
+            }
+        }
+    }
+    
+    clear() {
+        for (let i = 0; i < this.grid.length; i++) {
+            this.grid[i] = null;
+        }
+        this.audio.playClear();
+    }
+    
+    updateUI() {
+        document.getElementById('particle-count').textContent = this.particleCount;
+    }
+    
+    loop() {
+        this.frameCount++;
+        
+        const steps = this.simSpeed >= 1 ? Math.floor(this.simSpeed) : 1;
+        for (let i = 0; i < steps; i++) {
+            if (this.isRunning) this.update();
+        }
+        
+        this.renderer.render();
+        
+        // FPS counter
+        if (this.frameCount % 30 === 0) {
+            const now = performance.now();
+            if (this.lastTime) {
+                const fps = Math.round(30000 / (now - this.lastTime));
+                document.getElementById('fps').textContent = fps;
+            }
+            this.lastTime = now;
+        }
+        
+        requestAnimationFrame(this.loop);
+    }
+}
+
+// Start the game
+window.addEventListener('load', () => {
+    window.game = new SandboxGame();
+});
