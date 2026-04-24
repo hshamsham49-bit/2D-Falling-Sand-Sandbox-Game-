@@ -1,0 +1,158 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #1a1a2e;
+    color: #eee;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+    height: 100vh;
+}
+
+#game-container {
+    display: flex;
+    height: 100vh;
+}
+
+canvas {
+    background: #0f0f1a;
+    cursor: crosshair;
+    flex: 1;
+    image-rendering: pixelated;
+}
+
+#ui-panel {
+    width: 260px;
+    background: #16213e;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border-left: 2px solid #0f3460;
+    overflow-y: auto;
+}
+
+h1 {
+    text-align: center;
+    color: #e94560;
+    font-size: 1.4rem;
+    margin-bottom: 5px;
+}
+
+.materials {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.mat-btn {
+    padding: 10px 5px;
+    border: 2px solid #0f3460;
+    background: #1a1a2e;
+    color: #eee;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.mat-btn:hover {
+    background: #0f3460;
+    transform: translateY(-2px);
+}
+
+.mat-btn.active {
+    border-color: #e94560;
+    background: #e94560;
+    color: white;
+    box-shadow: 0 0 10px rgba(233, 69, 96, 0.4);
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.controls label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+input[type="range"] {
+    width: 100%;
+    accent-color: #e94560;
+}
+
+button {
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    background: #0f3460;
+    color: white;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: 0.2s;
+}
+
+button:hover {
+    background: #e94560;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #aaa;
+    margin-top: auto;
+    padding-top: 10px;
+    border-top: 1px solid #0f3460;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: #16213e;
+    padding: 25px;
+    border-radius: 12px;
+    border: 2px solid #0f3460;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.modal-content label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    #ui-panel {
+        width: 200px;
+    }
+    .materials {
+        grid-template-columns: 1fr;
+    }
+}
