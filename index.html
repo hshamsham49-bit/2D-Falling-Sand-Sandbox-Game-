@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sandbox 2D - Particle Simulation</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <canvas id="sandbox"></canvas>
+        
+        <div id="ui-panel">
+            <h1>🎨 Sandbox 2D</h1>
+            
+            <div class="materials">
+                <button class="mat-btn active" data-mat="sand">🏖️ Sand</button>
+                <button class="mat-btn" data-mat="water">💧 Water</button>
+                <button class="mat-btn" data-mat="fire">🔥 Fire</button>
+                <button class="mat-btn" data-mat="stone">🪨 Stone</button>
+                <button class="mat-btn" data-mat="wood">🪵 Wood</button>
+                <button class="mat-btn" data-mat="steam">💨 Steam</button>
+                <button class="mat-btn" data-mat="oil">🛢️ Oil</button>
+                <button class="mat-btn" data-mat="plant">🌱 Plant</button>
+                <button class="mat-btn" data-mat="acid">🧪 Acid</button>
+                <button class="mat-btn" data-mat="salt">🧂 Salt</button>
+            </div>
+
+            <div class="controls">
+                <label>Brush Size: <span id="brush-val">3</span></label>
+                <input type="range" id="brush-size" min="1" max="15" value="3">
+                
+                <button id="clear-btn">🗑️ Clear All</button>
+                <button id="pause-btn">⏸️ Pause</button>
+                <button id="settings-btn">⚙️ Settings</button>
+            </div>
+
+            <div class="stats">
+                <span>Particles: <span id="particle-count">0</span></span>
+                <span>FPS: <span id="fps">60</span></span>
+            </div>
+        </div>
+    </div>
+
+    <div id="settings-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>⚙️ Settings</h2>
+            <label>
+                <input type="checkbox" id="show-fps" checked> Show FPS
+            </label>
+            <label>
+                <input type="checkbox" id="sound-enabled" checked> Sound Effects
+            </label>
+            <label>
+                Simulation Speed:
+                <select id="sim-speed">
+                    <option value="1">Normal</option>
+                    <option value="2">Fast</option>
+                    <option value="0.5">Slow</option>
+                </select>
+            </label>
+            <button id="close-settings">Close</button>
+        </div>
+    </div>
+
+    <script src="particles.js"></script>
+    <script src="audio.js"></script>
+    <script src="input.js"></script>
+    <script src="renderer.js"></script>
+    <script src="game.js"></script>
+    <script src="ui.js"></script>
+</body>
+</html>
